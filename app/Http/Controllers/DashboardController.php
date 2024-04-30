@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class dashboard extends Controller
+class DashboardController extends Controller
 {
     /**
      * Handle the incoming request.
