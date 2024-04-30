@@ -15,7 +15,7 @@ Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
 route::resource('guru', GuruController::class);
 
-route::apiResource('siswa', SiswaController::class)->except('show');
+route::Resource('siswa', SiswaController::class)->except('show');
 Route::get('siswa/ajax', [SiswaController::class , 'ajax'])->name('siswa.ajax');
 
 route::apiResource('kelas', KelasController::class)->except('show');

@@ -88,14 +88,6 @@
     </div>
     <!-- / Layout wrapper -->
 
-    <div class="buy-now">
-      <a
-        href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
-        target="_blank"
-        class="btn btn-danger btn-buy-now"
-        >Upgrade to Pro</a
-      >
-    </div>
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
@@ -123,7 +115,105 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.0.5/js/dataTables.bootstrap5.js"></script>
-    <script src="{{ asset('js/custom.js') }}"></script>
 
+    <script>
+        $(document).ready(function() {
+            $('#table_kelas').DataTable(
+                //     {
+                //     processing: true,
+                //     serverSide: true,
+                //     ajax: "{{ route('siswa.index') }}",
+                //     columns: [
+                //         { data: 'nama', name: 'nama' },
+                //         { data: 'kelas', name: 'kelas' },
+                //         { data: 'alamat', name: 'alamat' }
+                //     ]
+                // }
+            );
+            $('#table_guru').DataTable(
+                //     {
+                //     processing: true,
+                //     serverSide: true,
+                //     ajax: "{{ route('siswa.index') }}",
+                //     columns: [
+                //         { data: 'nama', name: 'nama' },
+                //         { data: 'kelas', name: 'kelas' },
+                //         { data: 'alamat', name: 'alamat' }
+                //     ]
+                // }
+            );
+
+            function updateAjaxSiswa() {
+              console.log(`{{ route('siswa.ajax') }}?filter_kelas=${$('#filter_kelas').val()}`);
+                $('#table_siswa').DataTable().destroy();
+                var list_siswa = $('#table_siswa').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    responsive: true,
+                    ajax: `{{ route('siswa.ajax') }}?filter_kelas=${$('#filter_kelas').val()}`,
+                    columns: [{
+                            data: 'nisn'
+                        },
+                        {
+                            data: 'nisn'
+                        },
+                        {
+                            data: 'nama_lengkap'
+                        },
+                        {
+                            data: 'nama_kelas'
+                        },
+                        {
+                            data: 'alamat'
+                        },
+                        {
+                            data: null
+                        }
+                    ],
+                    columnDefs: [{
+                            targets: 0,
+                            data: null,
+                            orderable: false,
+                            render: function(data, type, row, meta) {
+                                return meta.row + 1;
+                            }
+                        },
+                        {
+                            targets: -1,
+                            data: 'id_siswa',
+                            orderable: false,
+                            render: function(data, type, row) {
+                                console.log(data.id_siswa);
+                                return `
+                                    <div class="dropdown">
+                                      <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                      </button>
+                                      <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="/siswa/${data.id_siswa}/edit"><i class="bx bx-edit-alt me-1"></i> Edit</a>
+                                        <form action="/siswa/${data.id_siswa}" method="POST" class="d-inline">
+                                          @csrf
+                                          @method('DELETE')
+                                          <button type="submit" class="dropdown-item">
+                                            <i class="bx bx-trash me-1"></i> Hapus
+                                          </button>
+                                        </form>
+                                      </div>
+                                    </div>
+                                  `;
+                            }
+                        }
+                    ]
+                });
+            }
+            updateAjaxSiswa();
+
+            // Memperbarui data ketika filter berubah
+            $('#filter_kelas').on('change', function() {
+                console.log('filter kelas berubah');
+                updateAjaxSiswa();
+            });
+        });
+    </script>
   </body>
 </html>
