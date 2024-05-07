@@ -17,4 +17,7 @@ class Absensi_siswa extends Model
         'tanggal',
         'status',
     ];
+    
+    public $timestamps = false;
+
 }

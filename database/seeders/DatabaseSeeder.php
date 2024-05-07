@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Absensi_siswa;
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Siswa;
@@ -16,9 +17,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Guru::factory(10)->create();
-        Kelas::factory(10)->create();
-        Siswa::factory(10)->create();
+        // Guru::factory(10)->create();
+        // Kelas::factory(10)->create();
+        // Siswa::factory(60)->create();
 
 
 
@@ -27,9 +28,8 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        User::factory(10)->create();
-        
-
+        // User::factory(10)->create();
+        Absensi_siswa::factory(100)->create();
         
     }
 }

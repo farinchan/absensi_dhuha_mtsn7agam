@@ -3,6 +3,9 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Guru>
@@ -24,7 +27,8 @@ class GuruFactory extends Factory
             'no_hp' => "08123123123",
             'email' => $this->faker->unique()->safeEmail,
             'username' => $this->faker->unique()->userName,
-            'password' => $this->faker->password,
+            'password' => Hash::make('password'),
+            'token' => Str::random($length = 50),
             
         ];
     }

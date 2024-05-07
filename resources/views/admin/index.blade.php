@@ -3,7 +3,7 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Data Siswa</h4>
+                <h4 class="card-title">Data admin</h4>
                 <h6 class="card-subtitle text-muted">Support card subtitle</h6>
 
 
@@ -20,15 +20,6 @@
                     <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-printer"></span> </i>
                         Cetak Laporan</button>
                 </div>
-                <div class=" mt-3">
-                    <label for="filter_kelas" class="form-label">Filter berdasarkan Kelas</label>
-                    <select class="form-select" id="filter_kelas" aria-label="Default select example">
-                        <option value="0" selected >Semua</option>
-                    @foreach ($kelas as $k)
-                        <option value="{{ $k->id_kelas }}">{{ $k->nama_kelas }}</option>
-                    @endforeach
-                    </select>
-                  </div>
                 <div class="modal fade" id="tambahModal" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -37,41 +28,34 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
-                            <form action="{{ route('siswa.store') }}" method="POST">
+                            <form action="{{ route('admin.store') }}" method="POST">
                                 @csrf
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <label class="form-label mt-2" for="nisn">NISN</label>
-                                        <input type="text" class="form-control" id="nisn" name="nisn"
-                                            required>
-                                        @error('nisn')
+                                        <label class="form-label mt-2" for="name">Nama admin</label>
+                                        <input type="text" class="form-control" id="name" name="name" required>
+                                        @error('name')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label mt-2" for="nama_lengkap">Nama</label>
-                                        <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap"
-                                            required>
-                                        @error('nama_lengkap')
+                                        <label class="form-label mt-2" for="email">Email</label>
+                                        <input type="text" class="form-control" id="email" name="email" required>
+                                        @error('email')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label mt-2" for="id_kelas_siswa">Kelas</label>
-                                        <select class="form-control" id="id_kelas_siswa" name="id_kelas_siswa" required>
-                                            <option value="">Pilih Kelas</option>
-                                            @foreach ($kelas as $k)
-                                                <option value="{{ $k->id_kelas }}">{{ $k->nama_kelas }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('id_kelas_siswa')
+                                        <label class="form-label mt-2" for="phone_number">No. Telp</label>
+                                        <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+                                        @error('phone_number')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label mt-2" for="alamat">Alamat</label>
-                                        <textarea class="form-control" id="alamat" name="alamat" rows="3" required></textarea>
-                                        @error('alamat')
+                                        <label class="form-label mt-2" for="password">Password</label>
+                                        <input type="text" class="form-control" id="password" name="password" required>
+                                        @error('password')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -106,35 +90,52 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-striped" id="table_siswa">
+                    <table class="table table-bordered table-hover table-striped" id="table_admin">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>NISN</th>
                                 <th>Nama</th>
-                                <th>Kelas</th>
-                                <th>Alamat</th>
+                                <th>Email</th>
+                                <th>No. Telp</th>
+                                <th>Password</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @foreach ($siswa as $x)
+                            @foreach ($admin as $x)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $x->nisn }}</td>
-                                    <td>{{ $x->nama_lengkap }}</td>
-                                    <td>{{ $x->id_kelas_siswa }}</td>
-                                    <td>{{ $x->alamat }}</td>
+                                    <td>{{ $x->name }}</td>
+                                    <td>{{ $x->email }}</td>
+                                    <td>{{ $x->phone_number }}</td>
+                                    <td>********</td>
                                     <td>
-                                        
+                                        <div class="dropdown">
+                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                                data-bs-toggle="dropdown">
+                                                <i class="bx bx-dots-vertical-rounded"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href=""><i
+                                                        class="bx bx-edit-alt me-1"></i> Edit</a>
+                                                <form action="{{ route('admin.destroy', $x->id) }}" method="POST"
+                                                    class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="bx bx-trash me-1"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+
                                     </td>
                                 </tr>
-                            @endforeach --}}
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-
 </x-app-layout>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Guru as ModelsGuru;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class GuruController extends Controller
 {
@@ -41,7 +42,7 @@ class GuruController extends Controller
 
     public function store(Request $request) {
         $request->validate([
-            'nip' => 'required',
+            'nip' => '',
             'nama_lengkap' => 'required',
             'mapel' => 'required',
             'no_hp' => 'required',
@@ -49,6 +50,9 @@ class GuruController extends Controller
             'username' => 'required',
             'password' => 'required',
         ]);
+
+        $request['password'] = bcrypt($request['password']);
+        $request['token'] = Str::random($length = 50);
 
         ModelsGuru::create($request->all());
         return redirect()->route('guru.index')->with('success', 'Data guru berhasil ditambahkan');

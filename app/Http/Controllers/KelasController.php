@@ -30,7 +30,7 @@ class KelasController extends Controller
     {
         $request->validate([
             'nama_kelas' => 'required',
-            'wali_kelas' => 'required',
+            'wali_kelas' => 'required   ',
         ]);
 
         Kelas::create($request->all());

@@ -60,15 +60,27 @@
     <ul class="menu-inner py-1">
         <!-- Dashboard -->
         <li class="menu-item @if (request()->is('dashboard') || request()->is('dashboard/*')) active @endif ">
-            <a href="index.html" class="menu-link">
+            <a href="{{ route('dashboard') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
             </a>
         </li>
+        <li class="menu-item @if (request()->is('absensi') || request()->is('absensi/*')) active @endif ">
+            <a href="{{ route('absensi.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user-pin"></i>
+                <div data-i18n="Analytics">Absensi Siswa</div>
+            </a>
+        </li>
+        <li class="menu-item @if (request()->is('history') || request()->is('history/*')) active @endif ">
+            <a href="{{ route('history.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-history"></i>
+                <div data-i18n="Analytics">history Absensi</div>
+            </a>
+        </li>
 
 
-        <!-- Components -->
-        <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
+        <!-- Data -->
+        <li class="menu-header small text-uppercase"><span class="menu-header-text">Data</span></li>
         <!-- data guru -->
         <li class="menu-item @if (request()->is('guru') || request()->is('guru/*')) active @endif ">
             <a href="{{ route('guru.index') }}" class="menu-link">
@@ -97,20 +109,27 @@
             </ul>
         </li>
 
-        <!-- Misc -->
-        <li class="menu-header small text-uppercase"><span class="menu-header-text">Misc</span></li>
-        <li class="menu-item">
-            <a href="https://github.com/themeselection/sneat-html-admin-template-free/issues" target="_blank"
-                class="menu-link">
-                <i class="menu-icon tf-icons bx bx-support"></i>
-                <div data-i18n="Support">Support</div>
+        <!-- Setting -->
+        <li class="menu-header small text-uppercase"><span class="menu-header-text">Setting</span></li>
+        <li class="menu-item @if (request()->is('piket')) active @endif">
+            <a href="" class="menu-link">
+                <i class="menu-icon tf-icons bx bxs-calendar"></i>
+                <div data-i18n="Support">Jadwal Piket</div>
             </a>
         </li>
-        <li class="menu-item">
-            <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/" target="_blank"
-                class="menu-link">
-                <i class="menu-icon tf-icons bx bx-file"></i>
-                <div data-i18n="Documentation">Documentation</div>
+        <li class="menu-item @if (request()->is('kehadiran')) active @endif">
+            <a href="" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-info-circle"></i>
+                <div data-i18n="Support">Kehadiran</div>
+            </a>
+        </li>
+
+        <!-- Misc -->
+        <li class="menu-header small text-uppercase"><span class="menu-header-text">Misc</span></li>
+        <li class="menu-item @if (request()->is('admin')) active @endif">
+            <a href="{{ route('admin.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-support"></i>
+                <div data-i18n="Support">Admin</div>
             </a>
         </li>
     </ul>

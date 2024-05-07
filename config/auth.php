@@ -65,6 +65,11 @@ return [
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
 
+        'guru' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\Guru::class),
+        ],
+
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

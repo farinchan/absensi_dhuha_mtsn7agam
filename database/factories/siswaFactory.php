@@ -19,7 +19,7 @@ class siswaFactory extends Factory
         return [
             'nisn' => $this->faker->unique()->randomNumber(8),
             'nama_lengkap' => $this->faker->name,
-            'id_kelas_siswa' => $this->faker->randomElement(['1', '2', '3', '4', '5']),
+            'id_kelas_siswa' => $this->faker->randomElement(['6', '2', '3', '4', '5']),
             'alamat' => $this->faker->text(50),
         ];
     }
