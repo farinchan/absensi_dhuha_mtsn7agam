@@ -12,14 +12,14 @@
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                         data-bs-target="#tambahModal"><span class="tf-icons bx bx-plus"></span> </i>Tambah
                         data</button>
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-file"></span>
-                        </i>Template excel</button>
+                    {{-- <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-file"></span>
+                        </i>Template excel</button> --}}
                     <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-import"></span>
                         </i>Import</button>
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-export"></span>
-                        </i>Export</button>
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-printer"></span> </i>
-                        Cetak Laporan</button>
+                    {{-- <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-export"></span>
+                        </i>Export</button> --}}
+                    <a href="{{ route("guru.laporan") }}" target="_blank" class="btn btn-info"><span class="tf-icons bx bx-printer"></span> </i>
+                        Cetak Laporan</a>
                 </div>
                 <div class="modal fade" id="tambahModal" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog" role="document">

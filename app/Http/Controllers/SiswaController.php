@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Models\Kelas;
+use Barryvdh\DomPDF\Facade\Pdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Yajra\DataTables\Contracts\DataTable;
 
 class SiswaController extends Controller
 {
@@ -23,19 +26,13 @@ class SiswaController extends Controller
 
     public function ajax(Request $request)
     {
-        $data = [];
+        $siswa = Siswa::join('kelas', 'siswa.id_kelas_siswa', '=', 'kelas.id_kelas');
+        
         if ($request->filter_kelas != 0) {
-            $siswa = Siswa::join('kelas', 'siswa.id_kelas_siswa', '=', 'kelas.id_kelas')->where('kelas.id_kelas', $request->filter_kelas);
-            $data["recordsTotal"] = $siswa->count();
-            $data["recordsFiltered"] = $siswa->count();
-            $data['data'] = $siswa->get();
-        } else {
-            $siswa = Siswa::join('kelas', 'siswa.id_kelas_siswa', '=', 'kelas.id_kelas');
-            $data["recordsTotal"] = $siswa->count();
-            $data["recordsFiltered"] = $siswa->count();
-            $data['data'] = $siswa->get();
-        }
-        return response()->json($data);
+            $siswa = $siswa->where('kelas.id_kelas', $request->filter_kelas);
+        } 
+
+        return  datatables()->of($siswa)->make(true);
     }
 
 
@@ -90,5 +87,41 @@ class SiswaController extends Controller
 
         $siswa->delete();
         return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil dihapus');
+    }
+
+    public function laporan(Request $request)
+    {
+        $siswa = Siswa::join('kelas', 'siswa.id_kelas_siswa', '=', 'kelas.id_kelas')->orderBy('kelas.id_kelas')->orderBy('siswa.nama_lengkap');
+        
+        if ($request->filter_kelas != 0) {
+            $siswa = $siswa->where('kelas.id_kelas', $request->filter_kelas);
+            $kelas = Kelas::find($request->filter_kelas)->nama_kelas;
+        } else {
+            $kelas = "Semua Kelas";
+        }
+
+        $data = [
+            'siswa' => $siswa->get(),
+            "kelas" => $kelas,
+        ];
+
+        // return response()->json($data);
+ 
+        $pdf = Pdf::loadView('siswa/siswa_laporan', $data);
+
+        return $pdf->stream();
+    }
+
+    public function cetak_kartu()
+    {
+        $id = request()->id;
+
+        $siswa = Siswa::join('kelas', 'siswa.id_kelas_siswa', '=', 'kelas.id_kelas')->find($id);
+        $data = [
+            "qrcode" => QrCode::size(120)->generate($siswa->nisn),
+            'siswa' => $siswa
+        ];
+        
+        return view('siswa.siswa_kartu', $data);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Guru as ModelsGuru;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -90,6 +91,18 @@ class GuruController extends Controller
     }
 
     
+    public function laporan(Request $request)
+    {
 
+        $data = [
+            "guru" => ModelsGuru::all(),
+        ];
+
+        // return response()->json($data);
+ 
+        $pdf = Pdf::loadView('guru/guru_laporan', $data);
+
+        return $pdf->stream();
+    }
 
 }

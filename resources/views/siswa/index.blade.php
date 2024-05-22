@@ -4,31 +4,33 @@
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">Data Siswa</h4>
-                <h6 class="card-subtitle text-muted">Support card subtitle</h6>
+                <h6 class="card-subtitle text-muted">MTS Negeri 7 Agam</h6>
 
 
                 <div class="btn-group mt-3" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                         data-bs-target="#tambahModal"><span class="tf-icons bx bx-plus"></span> </i>Tambah
                         data</button>
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-file"></span>
-                        </i>Template excel</button>
+                    {{-- <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-file"></span>
+                        </i>Template excel</button> --}}
                     <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-import"></span>
                         </i>Import</button>
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-export"></span>
-                        </i>Export</button>
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-printer"></span> </i>
-                        Cetak Laporan</button>
+                    {{-- <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-export"></span>
+                        </i>Export</button> --}}
+                    <a id="cetak_laporan" target="_blank" class="btn btn-info"><span class="tf-icons bx bx-printer"></span> </i>
+                        Cetak Laporan</a>
+                    {{-- <a id="cetak_kartu" target="_blank" class="btn btn-warning"><span class="tf-icons bx bx-id-card"></span> </i>
+                        Cetak kartu Absensi</a> --}}
                 </div>
                 <div class=" mt-3">
                     <label for="filter_kelas" class="form-label">Filter berdasarkan Kelas</label>
                     <select class="form-select" id="filter_kelas" aria-label="Default select example">
-                        <option value="0" selected >Semua</option>
-                    @foreach ($kelas as $k)
-                        <option value="{{ $k->id_kelas }}">{{ $k->nama_kelas }}</option>
-                    @endforeach
+                        <option value="0" selected>Semua</option>
+                        @foreach ($kelas as $k)
+                            <option value="{{ $k->id_kelas }}">{{ $k->nama_kelas }}</option>
+                        @endforeach
                     </select>
-                  </div>
+                </div>
                 <div class="modal fade" id="tambahModal" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">

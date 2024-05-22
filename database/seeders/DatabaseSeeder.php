@@ -17,19 +17,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Guru::factory(10)->create();
-        // Kelas::factory(10)->create();
-        // Siswa::factory(60)->create();
+        Guru::factory(20)->create();
+        Kelas::factory(10)->create();
+        Siswa::factory(60)->create();
 
 
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        User::factory()->create([
+            'name' => 'Fajri Rinaldi Chan',
+            'email' => 'fajri@gariskode.com',
+        ]);
 
-        // User::factory(10)->create();
-        Absensi_siswa::factory(100)->create();
+        User::factory(10)->create();
+        // Absensi_siswa::factory(100)->create();
         
     }
 }

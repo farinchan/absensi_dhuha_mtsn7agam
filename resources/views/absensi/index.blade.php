@@ -27,7 +27,6 @@
                 <div class=" ">
                     <label for="filter_kelas" class="form-label">Filter berdasarkan Kelas</label>
                     <select class="form-select" id="filter_kelas" aria-label="Default select example">
-                        <option value="0" selected>Semua</option>
                         @foreach ($kelas as $k)
                             <option value="{{ $k->id_kelas }}">{{ $k->nama_kelas }}</option>
                         @endforeach
@@ -35,30 +34,44 @@
                 </div>
                 <div class="mt-3">
                     <label for="filter_tanggal" class="form-label">Filter berdasarkan Tanggal</label>
-                    <input type="date" class="form-control" id="filter_tanggal">
+                    <input type="date" class="form-control" id="filter_tanggal" value="{{ date('Y-m-d') }}">
                 </div>
-                <div class="btn-group mt-3" role="group" aria-label="Basic example">
+                <div class="mt-3">
+                    <label for="filter_kehadiran" class="form-label">Filter berdasarkan Kehadiran</label>
+                    <select class="form-select" id="filter_kehadiran" aria-label="Default select example">
+                        <option value="0" selected>Semua</option>
+                        <option value="hadir">Hadir</option>
+                        <option value="terlambat">terlambat</option>
+                        <option value="haid">haid</option>
+                    </select>
+                    <div class="btn-group mt-3" role="group" aria-label="Basic example">
 
-                    <button type="button" class="btn btn-info"><span class="tf-icons bx bx-search-alt-2"></span>
-                        </i>Cari</button>
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-export"></span>
-                        </i>Export</button>
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-printer"></span> </i>
-                        Cetak Laporan</button>
+                        {{-- <button type="button" class="btn btn-info"><span class="tf-icons bx bx-search-alt-2"></span>
+                            </i>Cari</button> --}}
+                        {{-- <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-export"></span>
+                            </i>Export</button> --}}
+                        <a id="cetak_laporan" class="btn btn-info" target="_blank"><span
+                                class="tf-icons bx bx-printer"></span>
+                            </i>
+                            Cetak Laporan</a>
+                    </div>
                 </div>
             </div>
+
         </div>
-        <div class="card mt-3">
+
+        <div class="card mt-2">
             <div class="card-header">
                 <h4 class="card-title">Absensi Siswa Kelas VII 5A</h4>
-                <h6 class="card-subtitle text-muted">Tanggal 20 April 2002</h6>
+                <h6 id="label_tanggal" class="card-subtitle text-muted"></h6>
             </div>
 
             <div class="card-body">
                 <div class="table-responsive text-nowrap">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="absensi_siswa">
                         <thead>
                             <tr>
+                                <th>No</th>
                                 <th>NISN</th>
                                 <th>Nama</th>
                                 <th>Kelas</th>
@@ -67,25 +80,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>202013545</td>
-                                <td><strong>Fadilla Septianti</strong></td>
-                                <td>VII 5A</td>
-                                <td>Haid</td>
-                                <td>20:18 19</td>
-                            </tr>
-                            <tr>
-                                <td>202013545</td>
-                                <td><strong>Fajri Rinaldi Chan</strong></td>
-                                <td>VII 5A</td>
-                                <td>Hadir</td>
-                                <td>20:19 19</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-    </div>
 
 </x-app-layout>

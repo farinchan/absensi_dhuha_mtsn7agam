@@ -7,26 +7,69 @@
                 <h6 class="card-subtitle text-muted">Support card subtitle</h6>
 
 
-                <div class="btn-group mt-3" role="group" aria-label="Basic example">
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class=" mt-3">
+                            <label for="filter_kelas" class="form-label">Filter berdasarkan Kelas</label>
+                            <select class="form-select" id="filter_kelas" aria-label="Default select example">
+                                <option value="0" selected>Semua</option>
+                                @foreach ($kelas as $k)
+                                    <option value="{{ $k->id_kelas }}">{{ $k->nama_kelas }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class=" mt-3">
+                            <label for="filter_nama" class="form-label">Filter berdasarkan Nama</label>
+                            <select class="form-select" id="select2-field" aria-label="Default select example">
+                                <option value="0" selected>Semua</option>
+                                @foreach ($siswa as $k)
+                                    <option value="{{ $k->id_siswa }}">{{ $k->nama_lengkap }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mt-3">
+                            <label for="filter_tanggal" class="form-label">Filter Dari Tanggal </label>
+                            <input type="date" class="form-control" id="filter_tanggal_dari" value="2024-01-01">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mt-3">
+                            <label for="filter_tanggal" class="form-label">Filter Sampai Tanggal</label>
+                            <input type="date" class="form-control" id="filter_tanggal_sampai" value="{{ date("Y-m-d") }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class=" mt-3">
+                            <label for="filter_kelas" class="form-label">Filter berdasarkan Kehadiran</label>
+                            <select class="form-select" id="filter_kehadiran" aria-label="Default select example">
+                                <option value="0" selected>Semua</option>
+                                <option value="hadir">Hadir</option>
+                                <option value="terlambat">terlambat</option>
+                                <option value="haid">Haid</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    
+                </div>
+                {{-- <div class="btn-group mt-3" role="group" aria-label="Basic example">
 
                     <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-export"></span>
                         </i>Export</button>
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-printer"></span> </i>
+                    <button type="button" class="btn btn-info"><span class="tf-icons bx bx-printer"></span> </i>
                         Cetak Laporan</button>
-                </div>
-                <div class=" mt-3">
-                    <label for="filter_kelas" class="form-label">Filter berdasarkan Kelas</label>
-                    <select class="form-select" id="filter_kelas" aria-label="Default select example">
-                        <option value="0" selected>Semua</option>
-                        @foreach ($kelas as $k)
-                            <option value="{{ $k->id_kelas }}">{{ $k->nama_kelas }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mt-3">
-                    <label for="filter_tanggal" class="form-label">Filter berdasarkan Tanggal</label>
-                    <input type="date" class="form-control" id="filter_tanggal">
-                </div>
+                </div> --}}
+
+                
 
                 @if ($errors->any())
                     <div class="alert alert-warning alert-dismissible mt-3" role="alert">
@@ -47,7 +90,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-striped" id="table_absensi">
+                    <table class="table table-bordered table-hover table-striped" id="table_history_absensi">
                         <thead>
                             <tr>
                                 <th>No</th>

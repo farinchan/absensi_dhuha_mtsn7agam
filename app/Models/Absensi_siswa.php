@@ -12,10 +12,12 @@ class Absensi_siswa extends Model
     protected $table = 'absensi_siswa';
     protected $primaryKey = 'id_absensi';
     protected $fillable = [
-        'id_siswa',
-        'id_kelas',
+        
+        'id_siswa_absensi',
+        'guru_id',
+        'kehadiran',
         'tanggal',
-        'status',
+        'jam_hadir'
     ];
     
     public $timestamps = false;
