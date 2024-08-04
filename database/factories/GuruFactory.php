@@ -23,9 +23,8 @@ class GuruFactory extends Factory
 
             'nip' => $this->faker->unique()->randomNumber(8),
             'nama_lengkap' => $this->faker->name,
-            'mapel' => $this->faker->randomElement(['Matematika', 'Bahasa Indonesia', 'Bahasa Inggris', 'IPA', 'IPS']),
-            'no_hp' => "08123123123",
-            'email' => $this->faker->unique()->safeEmail,
+            'mapel' => $this->faker->randomElement(['Matematika', 'Bahasa Indonesia', 'Bahasa Inggris', 'IPA', 'IPS', 'PKN', 'PJOK', 'Seni Budaya', 'Prakarya', 'Agama']),
+            'no_hp' => $this->faker->e164PhoneNumber,
             'username' => $this->faker->unique()->userName,
             'password' => Hash::make('password'),
             'token' => Str::random($length = 50),

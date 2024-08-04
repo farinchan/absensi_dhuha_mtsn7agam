@@ -71,7 +71,7 @@
         <!-- Setting -->
         <li class="menu-header small text-uppercase"><span class="menu-header-text">Setting</span></li>
         <li class="menu-item @if (request()->is('piket')) active @endif">
-            <a href="" class="menu-link">
+            <a href="{{ route("jadwal_piket.index") }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-calendar"></i>
                 <div data-i18n="Support">Jadwal Piket</div>
             </a>
@@ -84,7 +84,7 @@
         </li> --}}
 
         <!-- Misc -->
-        <li class="menu-header small text-uppercase"><span class="menu-header-text">Misc</span></li>
+        <li class="menu-header small text-uppercase"><span class="menu-header-text">Administrator</span></li>
         <li class="menu-item @if (request()->is('admin')) active @endif">
             <a href="{{ route('admin.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-support"></i>

@@ -5,9 +5,6 @@
             <div class="card-header">
                 <h4 class="card-title">History Absensi Siswa</h4>
                 <h6 class="card-subtitle text-muted">Support card subtitle</h6>
-
-
-                
                 <div class="row">
                     <div class="col-md-6">
                         <div class=" mt-3">

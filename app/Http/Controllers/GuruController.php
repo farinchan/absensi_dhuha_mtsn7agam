@@ -6,6 +6,9 @@ use App\Models\Guru as ModelsGuru;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\GuruExport;
+use App\Imports\GuruImport;
 
 class GuruController extends Controller
 {
@@ -47,7 +50,6 @@ class GuruController extends Controller
             'nama_lengkap' => 'required',
             'mapel' => 'required',
             'no_hp' => 'required',
-            'email' => 'required',
             'username' => 'required',
             'password' => 'required',
         ]);
@@ -76,7 +78,6 @@ class GuruController extends Controller
             'nama_lengkap' => 'required',
             'mapel' => 'required',
             'no_hp' => 'required',
-            'email' => 'required',
             'username' => 'required',
             'password' => 'required',
         ]);
@@ -103,6 +104,24 @@ class GuruController extends Controller
         $pdf = Pdf::loadView('guru/guru_laporan', $data);
 
         return $pdf->stream();
+    }
+
+    public function export()
+	{
+		return Excel::download(new GuruExport, 'guru.xlsx');
+	}
+
+    function import(Request $request) {
+        // validasi
+		
+        $request->validate([
+            'file' => 'required|mimes:csv,xls,xlsx'
+        ]);
+
+		Excel::import(new GuruImport, $request->file('file'));
+                 
+        return back()->with('success', 'Data guru berhasil diimport');
+        
     }
 
 }

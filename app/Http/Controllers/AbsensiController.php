@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Absensi_siswa;
 use App\Models\Kelas;
 use App\Models\Siswa;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -13,31 +14,157 @@ class AbsensiController extends Controller
 
     public function index()
     {
-        $kelas = Kelas::all();
-        return view('absensi/index', compact('kelas'));
+        $data = [
+            "kelas" => Kelas::all(),
+            "siswa" => Siswa::all(),
+        ];
+        return view('absensi/index', $data);
     }
 
     public function ajax(Request $request)
     {
-        // Ambil semua data siswa beserta status absen atau belum absen pada hari ini
-        $siswa = Siswa::leftJoin('absensi_siswa', 'siswa.id_siswa', '=', 'absensi_siswa.id_siswa_absensi')
-            ->leftJoin('kelas', 'siswa.id_kelas_siswa', '=', 'kelas.id_kelas')
-            ->select('siswa.nisn', 'siswa.nama_lengkap', 'kelas.nama_kelas', 'absensi_siswa.*');
+        $siswaFilter = [];
 
-        if ($request->filter_kelas != 0) {
-            $siswa->where('kelas.id_kelas', $request->filter_kelas);
+        if ($request->filter_tanggal_dari == $request->filter_tanggal_sampai) {
+            if ($request->filter_kehadiran == 0) {
+                $siswa = Siswa::join("kelas", "siswa.id_kelas_siswa", "=", "kelas.id_kelas")
+                    ->where('kelas.id_kelas', $request->filter_kelas)
+                    ->select('siswa.id_siswa', 'siswa.nisn', 'siswa.nama_lengkap', 'siswa.alamat', 'kelas.nama_kelas');
+
+                if ($request->filter_nama != 0) {
+                    $siswa->where('siswa.id_siswa', $request->filter_nama);
+                }
+
+
+                $absensi_siswa = Absensi_siswa::where('tanggal', $request->filter_tanggal_dari)->get();
+
+                foreach ($siswa->get()  as $s) {
+                    if ($absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()) {
+                        $siswaFilter[] = $s;
+                        $siswaFilter[count($siswaFilter) - 1]->tanggal = $request->filter_tanggal_dari;
+                        $siswaFilter[count($siswaFilter) - 1]->kehadiran = $absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()->kehadiran;
+                        $siswaFilter[count($siswaFilter) - 1]->waktu_absensi = $absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()->jam_hadir;
+                    } else {
+                        $siswaFilter[] = $s;
+                        $siswaFilter[count($siswaFilter) - 1]->tanggal = $request->filter_tanggal_dari;
+                        $siswaFilter[count($siswaFilter) - 1]->kehadiran = null;
+                        $siswaFilter[count($siswaFilter) - 1]->waktu_absensi = null;
+                    }
+                }
+            } elseif ($request->filter_kehadiran == "tidak hadir") {
+                $siswa = Siswa::join("kelas", "siswa.id_kelas_siswa", "=", "kelas.id_kelas")
+                    ->where('kelas.id_kelas', $request->filter_kelas)
+                    ->select('siswa.id_siswa', 'siswa.nisn', 'siswa.nama_lengkap', 'siswa.alamat', 'kelas.nama_kelas');
+
+                if ($request->filter_nama != 0) {
+                    $siswa->where('siswa.id_siswa', $request->filter_nama);
+                }
+
+                $absensi_siswa = Absensi_siswa::where('tanggal', $request->filter_tanggal_dari)->get();
+
+                foreach ($siswa->get()  as $s) {
+                    if ($absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()) {
+                    } else {
+                        $siswaFilter[] = $s;
+                        $siswaFilter[count($siswaFilter) - 1]->tanggal = $request->filter_tanggal_dari;
+                        $siswaFilter[count($siswaFilter) - 1]->kehadiran = null;
+                        $siswaFilter[count($siswaFilter) - 1]->waktu_absensi = null;
+                    }
+                }
+            } else {
+                $siswa = Siswa::join("kelas", "siswa.id_kelas_siswa", "=", "kelas.id_kelas")
+                    ->where('kelas.id_kelas', $request->filter_kelas)
+                    ->join('absensi_siswa', 'siswa.id_siswa', '=', 'absensi_siswa.id_siswa_absensi')
+                    ->select('siswa.id_siswa', 'siswa.nisn', 'siswa.nama_lengkap', 'siswa.alamat', 'kelas.nama_kelas', 'absensi_siswa.tanggal',  'absensi_siswa.kehadiran', 'absensi_siswa.jam_hadir as waktu_absensi')
+                    ->where('absensi_siswa.tanggal', $request->filter_tanggal_dari)
+                    ->where('absensi_siswa.kehadiran', $request->filter_kehadiran);
+
+                // dd($siswa->get());
+
+                if ($request->filter_nama != 0) {
+                    $siswa->where('siswa.id_siswa', $request->filter_nama);
+                }
+                // return response()->json($siswa->get());
+
+                $siswaFilter = $siswa->get();
+            }
+        } else {
+
+            $startDate = $request->filter_tanggal_dari;
+            $endDate = $request->filter_tanggal_sampai;
+            $currentDate = Carbon::parse($startDate);
+
+            while ($currentDate->lte($endDate)) {
+                if ($request->filter_kehadiran == 0) {
+                    $siswa = Siswa::join("kelas", "siswa.id_kelas_siswa", "=", "kelas.id_kelas")
+                        ->where('kelas.id_kelas', $request->filter_kelas)
+                        ->select('siswa.id_siswa', 'siswa.nisn', 'siswa.nama_lengkap', 'siswa.alamat', 'kelas.nama_kelas');
+
+                    if ($request->filter_nama != 0) {
+                        $siswa->where('siswa.id_siswa', $request->filter_nama);
+                    }
+
+
+                    $absensi_siswa = Absensi_siswa::where('tanggal', $currentDate->format('Y-m-d'))->get();
+
+                    foreach ($siswa->get()  as $s) {
+                        if ($absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()) {
+                            $siswaFilter[] = $s;
+                            $siswaFilter[count($siswaFilter) - 1]->tanggal = $currentDate->format('Y-m-d');
+                            $siswaFilter[count($siswaFilter) - 1]->kehadiran = $absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()->kehadiran;
+                            $siswaFilter[count($siswaFilter) - 1]->waktu_absensi = $absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()->jam_hadir;
+                        } else {
+                            $siswaFilter[] = $s;
+                            $siswaFilter[count($siswaFilter) - 1]->tanggal = $currentDate->format('Y-m-d');
+                            $siswaFilter[count($siswaFilter) - 1]->kehadiran = null;
+                            $siswaFilter[count($siswaFilter) - 1]->waktu_absensi = null;
+                        }
+                    }
+                } elseif ($request->filter_kehadiran == "tidak hadir") {
+                    $siswa = Siswa::join("kelas", "siswa.id_kelas_siswa", "=", "kelas.id_kelas")
+                        ->where('kelas.id_kelas', $request->filter_kelas)
+                        ->select('siswa.id_siswa', 'siswa.nisn', 'siswa.nama_lengkap', 'siswa.alamat', 'kelas.nama_kelas');
+
+                    if ($request->filter_nama != 0) {
+                        $siswa->where('siswa.id_siswa', $request->filter_nama);
+                    }
+
+                    $absensi_siswa = Absensi_siswa::where('tanggal', $currentDate->format('Y-m-d'))->get();
+
+                    foreach ($siswa->get()  as $s) {
+                        if ($absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()) {
+                        } else {
+                            $siswaFilter[] = $s;
+                            $siswaFilter[count($siswaFilter) - 1]->tanggal = $currentDate->format('Y-m-d');
+                            $siswaFilter[count($siswaFilter) - 1]->kehadiran = null;
+                            $siswaFilter[count($siswaFilter) - 1]->waktu_absensi = null;
+                        }
+                    }
+                } else {
+                    $siswa = Siswa::join("kelas", "siswa.id_kelas_siswa", "=", "kelas.id_kelas")
+                        ->where('kelas.id_kelas', $request->filter_kelas)
+                        ->join('absensi_siswa', 'siswa.id_siswa', '=', 'absensi_siswa.id_siswa_absensi')
+                        ->select('siswa.id_siswa', 'siswa.nisn', 'siswa.nama_lengkap', 'siswa.alamat', 'kelas.nama_kelas', 'absensi_siswa.tanggal',  'absensi_siswa.kehadiran', 'absensi_siswa.jam_hadir as waktu_absensi')
+                        ->where('absensi_siswa.tanggal', $currentDate->format('Y-m-d'))
+                        ->where('absensi_siswa.kehadiran', $request->filter_kehadiran);
+
+                    if ($request->filter_nama != 0) {
+                        $siswa->where('siswa.id_siswa', $request->filter_nama);
+                    }
+
+                    if ($siswa->get()->count() > 0) {
+                        $siswaFilter = array_merge($siswaFilter, $siswa->get()->toArray());
+                    }
+
+                }
+                $currentDate->addDay(); // Increment the date by one day
+            }
         }
 
-        if ($request->filter_tanggal) {
-            $siswa->where('tanggal', $request->filter_tanggal);
-        }
-        // $siswa = $siswa->where('absensi_siswa.tanggal', '2024-5-23');
 
-        if ($request->filter_kehadiran != 0) {
-            $siswa->where('absensi_siswa.kehadiran', $request->filter_kehadiran);
-        }
+        // return response()->json($siswaFilter);
 
-        return  datatables()->of($siswa)->make(true);
+        return  datatables()->of($siswaFilter)->make(true);
     }
 
     public function create()
@@ -88,28 +215,152 @@ class AbsensiController extends Controller
     {
 
 
-        // Ambil semua data siswa beserta status absen atau belum absen pada hari ini
-        $siswa = Siswa::leftJoin('absensi_siswa', 'siswa.id_siswa', '=', 'absensi_siswa.id_siswa_absensi')
-            ->leftJoin('kelas', 'siswa.id_kelas_siswa', '=', 'kelas.id_kelas')
-            ->select('siswa.nisn', 'siswa.nama_lengkap', 'kelas.nama_kelas', 'absensi_siswa.*');
+        $siswaFilter = [];
 
-        if ($request->filter_kelas != 0) {
-            $siswa->where('kelas.id_kelas', $request->filter_kelas);
+        if ($request->filter_tanggal_dari == $request->filter_tanggal_sampai) {
+            if ($request->filter_kehadiran == 0) {
+                $siswa = Siswa::join("kelas", "siswa.id_kelas_siswa", "=", "kelas.id_kelas")
+                    ->where('kelas.id_kelas', $request->filter_kelas)
+                    ->select('siswa.id_siswa', 'siswa.nisn', 'siswa.nama_lengkap', 'siswa.alamat', 'kelas.nama_kelas');
+
+                if ($request->filter_nama != 0) {
+                    $siswa->where('siswa.id_siswa', $request->filter_nama);
+                }
+
+
+                $absensi_siswa = Absensi_siswa::where('tanggal', $request->filter_tanggal_dari)->get();
+
+                foreach ($siswa->get()  as $s) {
+                    if ($absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()) {
+                        $siswaFilter[] = $s;
+                        $siswaFilter[count($siswaFilter) - 1]->tanggal = $request->filter_tanggal_dari;
+                        $siswaFilter[count($siswaFilter) - 1]->kehadiran = $absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()->kehadiran;
+                        $siswaFilter[count($siswaFilter) - 1]->waktu_absensi = $absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()->jam_hadir;
+                    } else {
+                        $siswaFilter[] = $s;
+                        $siswaFilter[count($siswaFilter) - 1]->tanggal = $request->filter_tanggal_dari;
+                        $siswaFilter[count($siswaFilter) - 1]->kehadiran = null;
+                        $siswaFilter[count($siswaFilter) - 1]->waktu_absensi = null;
+                    }
+                }
+            } elseif ($request->filter_kehadiran == "tidak hadir") {
+                $siswa = Siswa::join("kelas", "siswa.id_kelas_siswa", "=", "kelas.id_kelas")
+                    ->where('kelas.id_kelas', $request->filter_kelas)
+                    ->select('siswa.id_siswa', 'siswa.nisn', 'siswa.nama_lengkap', 'siswa.alamat', 'kelas.nama_kelas');
+
+                if ($request->filter_nama != 0) {
+                    $siswa->where('siswa.id_siswa', $request->filter_nama);
+                }
+
+                $absensi_siswa = Absensi_siswa::where('tanggal', $request->filter_tanggal_dari)->get();
+
+                foreach ($siswa->get()  as $s) {
+                    if ($absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()) {
+                    } else {
+                        $siswaFilter[] = $s;
+                        $siswaFilter[count($siswaFilter) - 1]->tanggal = $request->filter_tanggal_dari;
+                        $siswaFilter[count($siswaFilter) - 1]->kehadiran = null;
+                        $siswaFilter[count($siswaFilter) - 1]->waktu_absensi = null;
+                    }
+                }
+            } else {
+                $siswa = Siswa::join("kelas", "siswa.id_kelas_siswa", "=", "kelas.id_kelas")
+                    ->where('kelas.id_kelas', $request->filter_kelas)
+                    ->join('absensi_siswa', 'siswa.id_siswa', '=', 'absensi_siswa.id_siswa_absensi')
+                    ->select('siswa.id_siswa', 'siswa.nisn', 'siswa.nama_lengkap', 'siswa.alamat', 'kelas.nama_kelas', 'absensi_siswa.tanggal',  'absensi_siswa.kehadiran', 'absensi_siswa.jam_hadir as waktu_absensi')
+                    ->where('absensi_siswa.tanggal', $request->filter_tanggal_dari)
+                    ->where('absensi_siswa.kehadiran', $request->filter_kehadiran);
+
+                // dd($siswa->get());
+
+                if ($request->filter_nama != 0) {
+                    $siswa->where('siswa.id_siswa', $request->filter_nama);
+                }
+                // return response()->json($siswa->get());
+
+                $siswaFilter = $siswa->get();
+            }
+        } else {
+
+            $startDate = $request->filter_tanggal_dari;
+            $endDate = $request->filter_tanggal_sampai;
+            $currentDate = Carbon::parse($startDate);
+
+            while ($currentDate->lte($endDate)) {
+                if ($request->filter_kehadiran == 0) {
+                    $siswa = Siswa::join("kelas", "siswa.id_kelas_siswa", "=", "kelas.id_kelas")
+                        ->where('kelas.id_kelas', $request->filter_kelas)
+                        ->select('siswa.id_siswa', 'siswa.nisn', 'siswa.nama_lengkap', 'siswa.alamat', 'kelas.nama_kelas');
+
+                    if ($request->filter_nama != 0) {
+                        $siswa->where('siswa.id_siswa', $request->filter_nama);
+                    }
+
+
+                    $absensi_siswa = Absensi_siswa::where('tanggal', $currentDate->format('Y-m-d'))->get();
+
+                    foreach ($siswa->get()  as $s) {
+                        if ($absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()) {
+                            $siswaFilter[] = $s;
+                            $siswaFilter[count($siswaFilter) - 1]->tanggal = $currentDate->format('Y-m-d');
+                            $siswaFilter[count($siswaFilter) - 1]->kehadiran = $absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()->kehadiran;
+                            $siswaFilter[count($siswaFilter) - 1]->waktu_absensi = $absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()->jam_hadir;
+                        } else {
+                            $siswaFilter[] = $s;
+                            $siswaFilter[count($siswaFilter) - 1]->tanggal = $currentDate->format('Y-m-d');
+                            $siswaFilter[count($siswaFilter) - 1]->kehadiran = null;
+                            $siswaFilter[count($siswaFilter) - 1]->waktu_absensi = null;
+                        }
+                    }
+                } elseif ($request->filter_kehadiran == "tidak hadir") {
+                    $siswa = Siswa::join("kelas", "siswa.id_kelas_siswa", "=", "kelas.id_kelas")
+                        ->where('kelas.id_kelas', $request->filter_kelas)
+                        ->select('siswa.id_siswa', 'siswa.nisn', 'siswa.nama_lengkap', 'siswa.alamat', 'kelas.nama_kelas');
+
+                    if ($request->filter_nama != 0) {
+                        $siswa->where('siswa.id_siswa', $request->filter_nama);
+                    }
+
+                    $absensi_siswa = Absensi_siswa::where('tanggal', $currentDate->format('Y-m-d'))->get();
+
+                    foreach ($siswa->get()  as $s) {
+                        if ($absensi_siswa->where('id_siswa_absensi', $s->id_siswa)->first()) {
+                        } else {
+                            $siswaFilter[] = $s;
+                            $siswaFilter[count($siswaFilter) - 1]->tanggal = $currentDate->format('Y-m-d');
+                            $siswaFilter[count($siswaFilter) - 1]->kehadiran = null;
+                            $siswaFilter[count($siswaFilter) - 1]->waktu_absensi = null;
+                        }
+                    }
+                } else {
+                    $siswa = Siswa::join("kelas", "siswa.id_kelas_siswa", "=", "kelas.id_kelas")
+                        ->where('kelas.id_kelas', $request->filter_kelas)
+                        ->join('absensi_siswa', 'siswa.id_siswa', '=', 'absensi_siswa.id_siswa_absensi')
+                        ->select('siswa.id_siswa', 'siswa.nisn', 'siswa.nama_lengkap', 'siswa.alamat', 'kelas.nama_kelas', 'absensi_siswa.tanggal',  'absensi_siswa.kehadiran', 'absensi_siswa.jam_hadir as waktu_absensi')
+                        ->where('absensi_siswa.tanggal', $currentDate->format('Y-m-d'))
+                        ->where('absensi_siswa.kehadiran', $request->filter_kehadiran);
+
+                    if ($request->filter_nama != 0) {
+                        $siswa->where('siswa.id_siswa', $request->filter_nama);
+                    }
+
+                    if ($siswa->get()->count() > 0) {
+                        $siswaFilter = array_merge($siswaFilter, $siswa->get()->toArray());
+                    }
+
+                }
+                $currentDate->addDay(); // Increment the date by one day
+            }
         }
 
-        if ($request->filter_tanggal) {
-            $siswa->where('tanggal', $request->filter_tanggal);
-        }
 
-        if ($request->filter_kehadiran != 0) {
-            $siswa->where('absensi_siswa.kehadiran', $request->filter_kehadiran);
-        }
-        
         $data = [
-            "siswa" => $siswa->get(),
-            "kelas" => Kelas::find($request->filter_kelas)->nama_kelas,
-            "tanggal" => $request->filter_tanggal,
-            "kehadiran" => $request->filter_kehadiran,
+            'tanggal_dari' => Carbon::parse($request->filter_tanggal_dari)->isoFormat('dddd, D MMMM Y'),
+            'tanggal_sampai' => Carbon::parse($request->filter_tanggal_sampai)->isoFormat('dddd, D MMMM Y'),
+            'kelas' => Kelas::find($request->filter_kelas)->nama_kelas,
+            'nama' => Siswa::find($request->filter_nama)->nama_lengkap ?? "0",
+            'kehadiran' => $request->filter_kehadiran,
+            "siswa" => $siswaFilter,
         ];
 
 

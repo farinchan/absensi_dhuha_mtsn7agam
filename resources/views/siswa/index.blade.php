@@ -13,11 +13,14 @@
                         data</button>
                     {{-- <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-file"></span>
                         </i>Template excel</button> --}}
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-import"></span>
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                        data-bs-target="#importModal"><span class="tf-icons bx bx-import"></span>
                         </i>Import</button>
-                    {{-- <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-export"></span>
-                        </i>Export</button> --}}
-                    <a id="cetak_laporan" target="_blank" class="btn btn-info"><span class="tf-icons bx bx-printer"></span> </i>
+                    <a href="{{ route('siswa.export') }}" class="btn btn-secondary"><span
+                            class="tf-icons bx bx-export"></span>
+                        </i>Export</a>
+                    <a id="cetak_laporan" target="_blank" class="btn btn-info"><span
+                            class="tf-icons bx bx-printer"></span> </i>
                         Cetak Laporan</a>
                     {{-- <a id="cetak_kartu" target="_blank" class="btn btn-warning"><span class="tf-icons bx bx-id-card"></span> </i>
                         Cetak kartu Absensi</a> --}}
@@ -31,6 +34,7 @@
                         @endforeach
                     </select>
                 </div>
+                {{-- tambah data guru --}}
                 <div class="modal fade" id="tambahModal" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -82,6 +86,35 @@
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Close</button>
                                     <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+
+
+                        </div>
+                    </div>
+                </div>
+                {{-- import data guru --}}
+                <div class="modal fade" id="importModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel1">import Data guru</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <form action="{{ route('siswa.import') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label class="form-label mt-2" for="nip">file excel</label>
+                                        <input type="file" class="form-control" id="file" name="file"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">import</button>
                                 </div>
                             </form>
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('jadwal_piket', function (Blueprint $table) {
             $table->id("id_piket")->autoIncrement();
             $table->foreignId('id_guru');
-            $table->date('hari');
+            $table->string('hari', 10);
 
 
         });

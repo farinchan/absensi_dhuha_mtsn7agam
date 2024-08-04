@@ -20,7 +20,8 @@ class HistoryAbsensiController extends Controller
 
     public function destroy($id)
     {
-        return redirect('absensi')->with('success', 'Data absensi berhasil dihapus');
+        Absensi_siswa::destroy($id);
+        return redirect()->route('history.index')->with('success', 'Data absensi berhasil dihapus');
     }
 
     public function ajax(Request $request)

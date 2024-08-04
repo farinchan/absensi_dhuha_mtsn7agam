@@ -18,7 +18,7 @@ class KelasFactory extends Factory
     {
         return [
             'nama_kelas' => $this->faker->randomElement(['XII RPL 1', 'XII RPL 2', 'XII RPL 3', 'XII RPL 4', 'XII RPL 5']),
-            'wali_kelas' => $this->faker->randomElement(['Pak Budi', 'Pak Andi', 'Pak Joko', 'Pak Agus', 'Pak Dedi']),
+            'guru_id' => $this->faker->numberBetween(1, 10),
         ];
     }
 }

@@ -20,4 +20,12 @@ class Guru extends Model
         'username',
         'password',
     ];
+    public function model(array $row)
+    {
+        return new Siswa([
+            'nama' => $row[1],
+            'nis' => $row[2], 
+            'alamat' => $row[3], 
+        ]);
+    }
 }

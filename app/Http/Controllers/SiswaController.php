@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SiswaExport;
+use App\Imports\SiswaImport;
 use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Models\Kelas;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Yajra\DataTables\Contracts\DataTable;
 
@@ -123,5 +126,22 @@ class SiswaController extends Controller
         ];
         
         return view('siswa.siswa_kartu', $data);
+    }
+
+    public function export()
+	{
+		return Excel::download(new SiswaExport, 'siswa.xlsx');
+	}
+
+    function import(Request $request) {
+        // validasi
+        $request->validate([
+            'file' => 'required|mimes:csv,xls,xlsx'
+        ]);
+
+		Excel::import(new SiswaImport, $request->file('file'));
+                 
+        return back()->with('success', 'Data siswa berhasil diimport');
+        
     }
 }

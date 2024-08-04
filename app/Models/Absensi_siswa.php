@@ -22,4 +22,9 @@ class Absensi_siswa extends Model
     
     public $timestamps = false;
 
+    public function siswa()
+    {
+        return $this->belongsTo(Siswa::class, 'id_siswa_absensi');
+    }
+
 }

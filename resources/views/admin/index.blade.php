@@ -11,20 +11,20 @@
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                         data-bs-target="#tambahModal"><span class="tf-icons bx bx-plus"></span> </i>Tambah
                         data</button>
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-file"></span>
-                        </i>Template excel</button>
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-import"></span>
-                        </i>Import</button>
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-export"></span>
-                        </i>Export</button>
-                    <button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-printer"></span> </i>
-                        Cetak Laporan</button>
+                    <!--<button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-file"></span>-->
+                    <!--    </i>Template excel</button>-->
+                    <!--<button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-import"></span>-->
+                    <!--    </i>Import</button>-->
+                    <!--<button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-export"></span>-->
+                    <!--    </i>Export</button>-->
+                    <!--<button type="button" class="btn btn-secondary"><span class="tf-icons bx bx-printer"></span> </i>-->
+                    <!--    Cetak Laporan</button>-->
                 </div>
                 <div class="modal fade" id="tambahModal" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel1">Tambah Data Siswa</h5>
+                                <h5 class="modal-title" id="exampleModalLabel1">Tambah Data Admin</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
@@ -116,8 +116,10 @@
                                                 <i class="bx bx-dots-vertical-rounded"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" href=""><i
-                                                        class="bx bx-edit-alt me-1"></i> Edit</a>
+                                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#editModal{{ $x->id }}">
+                                                    <i class="bx bx-edit me-1"></i> Edit
+                                                </a>
                                                 <form action="{{ route('admin.destroy', $x->id) }}" method="POST"
                                                     class="d-inline">
                                                     @csrf
@@ -138,4 +140,59 @@
             </div>
         </div>
     </div>
+
+    @foreach ($admin as $x)
+        <div class="modal fade" id="editModal{{ $x->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel1">Edit Data Admin</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('admin.update', $x->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body ">
+                            <div class="form-group ">
+                                <label class="form-label mt-2" for="name">Nama admin</label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ $x->name }}"
+                                    required>
+                                @error('name')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label mt-2" for="email">Email</label>
+                                <input type="text" class="form-control" id="email" name="email" value="{{ $x->email }}"
+                                    required>
+                                @error('email')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group ">
+                                <label class="form-label mt-2" for="phone_number">No. Telp</label>
+                                <input type="text" class="form-control" id="phone_number" name="phone_number"
+                                    value="{{ $x->phone_number }}" required>
+                                @error('phone_number')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group ">
+                                <label class="form-label mt-2" for="password">Password</label>
+                                <input type="text" class="form-control" id="password" name="password" required>
+                                @error('password')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
 </x-app-layout>

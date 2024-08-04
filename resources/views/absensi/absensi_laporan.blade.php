@@ -28,19 +28,26 @@
         @if ($kehadiran == '0')
             <h2> Laporan Absensi Siswa MTS Negeri 7 Agam</h2>
         @elseif ($kehadiran == 'hadir')
-            <h2> Laporan Sholat Dhuha MTS Negeri 7 Agam</h2>
+            <h2> Laporan Siswa yang Sholat Dhuha MTS Negeri 7 Agam</h2>
         @elseif ($kehadiran == 'tidak hadir')
-            <h2> Laporan Tidak Sholat Dhuha MTS Negeri 7 Agam</h2>
+            <h2> Laporan Siswa yang Tidak Sholat Dhuha MTS Negeri 7 Agam</h2>
         @elseif ($kehadiran == 'haid')
-            <h2> Laporan berhalangan Sholat Dhuha MTS Negeri 7 Agam</h2>
+            <h2> Laporan Siswa yang berhalangan Sholat Dhuha MTS Negeri 7 Agam</h2>
         @elseif ($kehadiran == 'terlambat')
-            <h2> Laporan Terlambat Sholat Dhuha MTS Negeri 7 Agam</h2>
+            <h2> Laporan Siswa yang Terlambat Sholat Dhuha MTS Negeri 7 Agam</h2>
         @endif
    
     <h2> Tahun ajaran 2023-2024</h2>
 
     <div style="margin-top: 50px;">
         <table>
+            @if ($nama !== "0")
+                <tr>
+                    <td>Nama</td>
+                    <td>:</td>
+                    <td>{{ $nama }}</td>
+                </tr>
+            @endif
             <tr>
                 <td>Kelas</td>
                 <td>:</td>
@@ -49,7 +56,11 @@
             <tr>
                 <td>Tanggal</td>
                 <td>:</td>
-                <td>{{ $tanggal }}</td>
+                @if ($tanggal_sampai !== $tanggal_dari)
+                    <td>{{ $tanggal_dari }} - {{ $tanggal_sampai }}</td>
+                @else
+                    <td>{{ $tanggal_dari }}</td>
+                @endif
             </tr>
             @if ($kehadiran !== '0')
                 <tr>
@@ -68,6 +79,9 @@
                 <td >NISN</td>
                 <td >Nama</td>
                 <td >Kelas</td>
+                @if ($tanggal_sampai !== $tanggal_dari)
+                    <td >Tanggal</td>
+                @endif
                 @if ($kehadiran == '0')
                     <td >Kehadiran</td>
                 @endif
@@ -84,10 +98,13 @@
                     <td style="padding-left: 5px;">{{  $i['nisn'] }}</td>
                     <td style="padding-left: 5px;">{{  $i['nama_lengkap'] }}</td>
                     <td style="text-align: center;">{{  $i['nama_kelas'] }}</td>
-                    @if ($kehadiran == '0')
-                    <td style="text-align: center;">{{  $i['kehadiran'] }}</td>
+                    @if ($tanggal_sampai !== $tanggal_dari)
+                        <td style="text-align: center;">{{  Carbon\Carbon::parse( $i['tanggal'])->isoFormat('D MMMM Y')  }}</td>
                     @endif
-                    <td style="text-align: center; font-weight: bold;">{{  $i['jam_hadir'] }} </td>
+                    @if ($kehadiran == '0')
+                    <td style="text-align: center;">{{  $i['kehadiran'] ?? "Tidak hadir" }}</td>
+                    @endif
+                    <td style="text-align: center; font-weight: bold;">{{  $i['waktu_absensi'] ?? "-" }} </td>
                 </tr>
             @endforeach
 
@@ -96,19 +113,19 @@
     </table>
     <table style="margin-top: 50px; margin-right: 40px; float: right;">
         <tr>
-            <td style="text-align: center;">Koto Kaciak, {{ Carbon\Carbon::now()->isoFormat('dddd, D MMMM Y') }} </td>
+            <td style="">Koto Kaciak, {{ Carbon\Carbon::now()->isoFormat('D MMMM Y') }} </td>
         </tr>
         <tr>
-            <td style="text-align: center;">Kepala MTS Negeri 7 Agam</td>
+            <td style="">Kepala Madrasah</td>
         </tr>
         <tr>
             <td style="height: 50px; text-align: center;"></td>
         </tr>
         <tr>
-            <td style="text-align: center;">Fulan Bin Fulan</td>
+            <td style=" font-weight: bold; text-decoration: underline; ">SALMAN PAS, S.Ag</td>
         </tr>
         <tr>
-            <td style="text-align: center;">NIP. 000000000000000000</td>
+            <td style="">NIP.197208122006041013</td>
         </tr>
     </table>
 </body>

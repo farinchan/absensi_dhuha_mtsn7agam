@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('absensi_siswa', function (Blueprint $table) {
             $table->id("id_absensi")->autoIncrement();
-            $table->foreignId('id_siswa_absensi')->constrained('siswa', 'id_siswa')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('id_siswa_absensi')->constrained('siswa', 'id_siswa')->onUpdate('NO ACTION')->onDelete('NO ACTION');
             $table->foreignId('guru_id')->constrained('guru', 'id_guru')->onUpdate('NO ACTION')->onDelete('NO ACTION');;
             $table->enum('kehadiran', ['hadir', 'terlambat', 'haid']);
             $table->date('tanggal');

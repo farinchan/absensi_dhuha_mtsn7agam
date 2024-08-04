@@ -13,7 +13,7 @@ class Kelas extends Model
     protected $primaryKey = 'id_kelas';
     protected $fillable = [
         'nama_kelas',
-        'wali_kelas',
+        'guru_id',
     ];
     public $timestamps = false;
 
@@ -21,4 +21,5 @@ class Kelas extends Model
     {
         return $this->hasMany(Siswa::class, 'id_kelas_siswa');
     }
+
 }

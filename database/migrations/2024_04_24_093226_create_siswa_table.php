@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id("id_siswa")->autoIncrement();
             $table->string('nisn', 20);
             $table->string('nama_lengkap', 50);
-            $table->foreignId('id_kelas_siswa')->constrained( 'kelas', 'id_kelas')->onUpdate('cascade')->onDelete('cascade');;
-            $table->string('alamat', 50);
+            $table->foreignId('id_kelas_siswa')->constrained('kelas', 'id_kelas')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+            $table->text('alamat');
             $table->timestamps();
         });
     }

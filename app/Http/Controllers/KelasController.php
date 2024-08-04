@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\KelasExport;
+use App\Models\Guru;
 use Illuminate\Http\Request;
 use App\Models\Kelas;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KelasController extends Controller
 {
@@ -11,15 +14,19 @@ class KelasController extends Controller
 
     public function index()
     {
-        $kelas = Kelas::all();
-        return view('kelas.index', compact('kelas'));
+        $data =[
+            "kelas" => Kelas::join('guru', 'kelas.guru_id', '=', 'guru.id_guru')->get(),
+            "guru" => Guru::select('id_guru', 'nama_lengkap')->get()
+        ];
+        // return response()->json($data);
+        return view('kelas.index', $data);
     }
 
-    public function show($id)
-    {
-        $kelas = Kelas::find($id);
-        return view('kelas.show', compact('kelas'));
-    }
+    // public function show($id)
+    // {
+    //     $kelas = Kelas::find($id);
+    //     return view('kelas.show', compact('kelas'));
+    // }
 
     public function create()
     {
@@ -30,7 +37,7 @@ class KelasController extends Controller
     {
         $request->validate([
             'nama_kelas' => 'required',
-            'wali_kelas' => 'required   ',
+            'guru_id' => 'required',
         ]);
 
         Kelas::create($request->all());
@@ -47,7 +54,7 @@ class KelasController extends Controller
     {
         $request->validate([
             'nama_kelas' => 'required',
-            'wali_kelas' => 'required',
+            'guru_id' => 'required',
         ]);
 
         $kelas = Kelas::find($id);
@@ -61,6 +68,10 @@ class KelasController extends Controller
         $kelas->delete();
         return redirect()->route('kelas.index')->with('success', 'Data kelas berhasil dihapus');
     }
+    public function export()
+	{
+		return Excel::download(new KelasExport, 'kelas.xlsx');
+	}
 
     
 }

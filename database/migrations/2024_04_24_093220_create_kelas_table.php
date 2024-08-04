@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('kelas', function (Blueprint $table) {
             $table->id("id_kelas")->autoIncrement();
             $table->string('nama_kelas', 10);
-            $table->string('wali_kelas', 50);
+            $table->foreignId('guru_id')->constrained('guru', 'id_guru')->onUpdate('NO ACTION')->onDelete('NO ACTION');;
         });
     }
 
